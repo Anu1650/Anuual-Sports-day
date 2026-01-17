@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Sports Day 2K25</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .login-form {
+            margin-bottom: 20px;
+        }
+        
+        .login-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .login-message.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            color: #2ecc71;
+            display: block;
+        }
+        
+        .login-message.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            display: block;
+        }
+        
+        .login-message.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            color: #3498db;
+            display: block;
+        }
+        
+        .otp-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .otp-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .otp-title {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .otp-timer {
+            text-align: center;
+            color: #ff6b6b;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .back-to-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-to-login a {
+            color: #667eea;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-to-login a:hover {
+            color: #764ba2;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .otp-input {
+            width: 45px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .otp-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+            outline: none;
+        }
+        
+        .otp-input.filled {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+        
+        .otp-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .demo-credentials {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .demo-credentials h4 {
+            color: #f1c40f;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .demo-credentials p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin: 5px 0;
+        }
+        
+        /* OTP DISPLAY STYLES */
+        .otp-display-container {
+            background: rgba(46, 204, 113, 0.15);
+            border: 2px solid #2ecc71;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+        
+        .otp-display-title {
+            color: #2ecc71;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .otp-code {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 10px;
+            color: white;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .copy-otp-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-otp-btn:hover {
+            background: #2980b9;
+        }
+        
+        .otp-instruction {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-trophy"></i>
+                    <h1>Annual <span>Sports Day 2K25</span></h1>
+                </div>
+                <div class="nav-buttons">
+                    <a href="/" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Registration
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <h2><i class="fas fa-lock"></i> Admin Portal</h2>
+                <p>Secure access to participant management</p>
+            </div>
+            
+            <div id="loginMessage" class="login-message">
+                👋 Please login with your credentials
+            </div>
+            
+            <!-- Email/Password Login Form -->
+            <div id="emailPasswordForm">
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="loginEmail" class="required">Admin Email</label>
+                        <input type="email" id="loginEmail" required placeholder="Enter admin email" value="aniketigade@gmail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword" class="required">Password</label>
+                        <input type="password" id="loginPassword" required placeholder="Enter password" value="Aniket123">
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                            <i class="fas fa-sign-in-alt"></i> Login with OTP
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="demo-credentials">
+                    <h4><i class="fas fa-info-circle"></i> Demo Credentials</h4>
+                    <p><strong>Email:</strong> aniketigade@gmail.com</p>
+                    <p><strong>Password:</strong> Aniket123</p>
+                    <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                        <i class="fas fa-exclamation-triangle"></i> OTP will be displayed on this page
+                    </p>
+                </div>
+            </div>
+            
+            <!-- OTP Verification Section -->
+            <div id="otpSection" class="otp-section">
+                <div class="otp-title">
+                    <i class="fas fa-shield-alt"></i> Two-Factor Authentication
+                    <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-top: 5px;">
+                        Enter 6-digit OTP sent to your email
+                    </p>
+                </div>
+                
+                <!-- OTP DISPLAY AREA - THIS IS WHAT SHOWS THE OTP -->
+                <div id="otpDisplayContainer" class="otp-display-container" style="display: none;">
+                    <div class="otp-display-title">
+                        <i class="fas fa-key"></i> Your OTP Code
+                    </div>
+                    <div id="otpCode" class="otp-code">
+                        Waiting for OTP...
+                    </div>
+                    <button id="copyOtpBtn" class="copy-otp-btn">
+                        <i class="fas fa-copy"></i> Copy OTP
+                    </button>
+                    <div class="otp-instruction">
+                        ⏰ This OTP will expire in 10 minutes
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="otp-inputs">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp1" data-index="1">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp2" data-index="2">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp3" data-index="3">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp4" data-index="4">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp5" data-index="5">
+                        <input type="text" maxlength="1" class="otp-input" id="adminOtp6" data-index="6">
+                    </div>
+                </div>
+                
+                <div id="otpTimer" class="otp-timer" style="display: none;">
+                    <i class="fas fa-clock"></i> Time remaining: <span id="timerValue">10:00</span>
+                </div>
+                
+                <div class="otp-actions">
+                    <button type="button" id="verifyOtpBtn" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-check"></i> Verify OTP
+                    </button>
+                    <button type="button" id="resendOtpBtn" class="btn btn-outline">
+                        <i class="fas fa-redo"></i> Resend
+                    </button>
+                </div>
+                
+                <div class="back-to-login">
+                    <a href="#" id="backToLogin">
+                        <i class="fas fa-arrow-left"></i> Back to login
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" style="text-align: center; display: none;">
+                <div class="spinner"></div>
+                <p style="color: white; margin-top: 10px;">Processing...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Annual Sports Day 2K25. All rights reserved.</p>
+                <p style="font-size: 0.9em; color: #666;">Admin Portal v1.0 | Secure Access</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State variables
+            let currentOtpId = null;
+            let currentAdminEmail = null;
+            let currentOTPNumber = null;
+            let otpTimer = null;
+            let timeLeft = 600; // 10 minutes
+            
+            // DOM Elements
+            const loginForm = document.getElementById('loginForm');
+            const emailPasswordForm = document.getElementById('emailPasswordForm');
+            const otpSection = document.getElementById('otpSection');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const loginMessage = document.getElementById('loginMessage');
+            const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+            const resendOtpBtn = document.getElementById('resendOtpBtn');
+            const backToLogin = document.getElementById('backToLogin');
+            const otpDisplayContainer = document.getElementById('otpDisplayContainer');
+            const otpCode = document.getElementById('otpCode');
+            const copyOtpBtn = document.getElementById('copyOtpBtn');
+            
+            // Initialize the page
+            init();
+            
+            function init() {
+                setupOTPInputs();
+                setupEventListeners();
+                checkExistingSession();
+            }
+            
+            function setupEventListeners() {
+                loginForm.addEventListener('submit', handleLogin);
+                verifyOtpBtn.addEventListener('click', verifyAdminOTP);
+                resendOtpBtn.addEventListener('click', resendOTP);
+                backToLogin.addEventListener('click', showLoginForm);
+                copyOtpBtn.addEventListener('click', copyOTPToClipboard);
+                
+                // Auto-verify on Enter key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && otpSection.classList.contains('show')) {
+                        verifyAdminOTP();
+                    }
+                });
+            }
+            
+            function setupOTPInputs() {
+                const inputs = document.querySelectorAll('#otpSection .otp-input');
+                
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        let value = e.target.value;
+                        
+                        // Only allow numbers
+                        if (!/^\d*$/.test(value)) {
+                            e.target.value = value.replace(/\D/g, '');
+                            return;
+                        }
+                        
+                        // Limit to 1 digit
+                        if (value.length > 1) {
+                            e.target.value = value.charAt(0);
+                        }
+                        
+                        // Visual feedback
+                        if (e.target.value.length === 1) {
+                            e.target.classList.add('filled');
+                        } else {
+                            e.target.classList.remove('filled');
+                        }
+                        
+                        // Auto-focus next input
+                        if (value.length === 1 && index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                        
+                        // Auto-verify when all inputs are filled
+                        if (index === inputs.length - 1 && value.length === 1) {
+                            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+                            if (allFilled) {
+                                setTimeout(() => {
+                                    verifyAdminOTP();
+                                }, 300);
+                            }
+                        }
+                    });
+                    
+                    // Handle paste
+                    input.addEventListener('paste', (e) => {
+                        e.preventDefault();
+                        const pasteData = e.clipboardData.getData('text').trim();
+                        if (/^\d{6}$/.test(pasteData)) {
+                            pasteData.split('').forEach((char, idx) => {
+                                if (idx < inputs.length) {
+                                    inputs[idx].value = char;
+                                    inputs[idx].classList.add('filled');
+                                }
+                            });
+                            inputs[inputs.length - 1].focus();
+                            setTimeout(() => {
+                                verifyAdminOTP();
+                            }, 300);
+                        }
+                    });
+                    
+                    // Handle backspace
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                            inputs[index - 1].focus();
+                            inputs[index - 1].value = '';
+                            inputs[index - 1].classList.remove('filled');
+                        }
+                    });
+                });
+            }
+            
+            async function handleLogin(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                if (!email || !password) {
+                    showMessage('Please enter email and password', 'error');
+                    return;
+                }
+                
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showMessage('Please enter a valid email address', 'error');
+                    return;
+                }
+                
+                showLoading();
+                showMessage('Authenticating...', 'info');
+                
+                try {
+                    // Step 1: Login with email/password
+                    const loginResult = await apiRequest('/admin/login', 'POST', { email, password });
+                    
+                    if (loginResult.success) {
+                        currentAdminEmail = email;
+                        
+                        // Step 2: Request OTP
+                        const otpResult = await apiRequest('/admin/request-login-otp', 'POST', { email });
+                        
+                        if (otpResult.success) {
+                            currentOtpId = otpResult.otpId;
+                            currentOTPNumber = otpResult.otp || 'Not received';
+                            
+                            hideLoading();
+                            showOTPSection();
+                            
+                            // DISPLAY THE OTP ON THE PAGE
+                            if (otpResult.otp) {
+                                otpCode.textContent = otpResult.otp;
+                                otpDisplayContainer.style.display = 'block';
+                                
+                                // Auto-fill OTP inputs
+                                autoFillOTP(otpResult.otp);
+                                
+                                showMessage(`✅ OTP generated: ${otpResult.otp}`, 'success');
+                            } else {
+                                showMessage('OTP sent but not returned in response. Check server console.', 'error');
+                            }
+                            
+                        } else {
+                            hideLoading();
+                            showMessage(otpResult.message || 'Failed to send OTP', 'error');
+                        }
+                    } else {
+                        hideLoading();
+                        showMessage(loginResult.message || 'Login failed', 'error');
+                    }
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('Login error:', error);
+                    showMessage('Login failed. Please check server connection.', 'error');
+                }
+            }
+            
+            function autoFillOTP(otp) {
+                if (otp && otp.length === 6) {
+                    const inputs = document.querySelectorAll('#otpSection .otp-input');
+                    otp.split('').forEach((digit, index) => {
+                        if (inputs[index]) {
+                            inputs[index].value = digit;
+                            inputs[index].classList.add('filled');
+                        }
+                    });
+                    
+                    // Auto-verify after 1 second
+                    setTimeout(() => {
+                        verifyAdminOTP();
+                    }, 1000);
+                }
+            }
+            
+            async function verifyAdminOTP() {
+                const otp = getOTPFromInputs();
+                
+                if (otp.length !== 6) {
+                    showMessage('Please enter complete 6-digit OTP', 'error');
+                    return;
+                }
+                
+                if (!currentOtpId || !currentAdminEmail) {
+                    showMessage('Please login first', 'error');
+                    return;
+                }
+                
+                showLoading();
+                showMessage('Verifying OTP...', 'info');
+                
+                try {
+                    // Try admin OTP verification first
+                    const result = await apiRequest('/admin/verify-login-otp', 'POST', {
+                        otpId: currentOtpId,
+                        otp: otp,
+                        email: currentAdminEmail
+                    });
+                    
+                    if (result.success) {
+                        // Store session data
+                        localStorage.setItem('adminSession', JSON.stringify(result.data));
+                        
+                        showMessage('✅ OTP verified! Redirecting to admin panel...', 'success');
+                        
+                        // Clear OTP timer
+                        if (otpTimer) {
+                            clearInterval(otpTimer);
+                        }
+                        
+                        // Redirect to admin panel
+                        setTimeout(() => {
+                            window.location.href = '/admin-panel.html';
+                        }, 1000);
+                        
+                    } else {
+                        hideLoading();
+                        showMessage(`❌ ${result.message}`, 'error');
+                        clearOTPInputs();
+                        focusFirstOTPInput();
+                    }
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('OTP verification error:', error);
+                    showMessage('OTP verification failed. Please try again.', 'error');
+                }
+            }
+            
+            async function resendOTP() {
+                if (!currentAdminEmail) {
+                    showMessage('Please login first', 'error');
+                    return;
+                }
+                
+                showLoading();
+                showMessage('Resending OTP...', 'info');
+                
+                try {
+                    const result = await apiRequest('/admin/request-login-otp', 'POST', {
+                        email: currentAdminEmail
+                    });
+                    
+                    if (result.success) {
+                        currentOtpId = result.otpId;
+                        currentOTPNumber = result.otp || 'Not received';
+                        
+                        hideLoading();
+                        clearOTPInputs();
+                        focusFirstOTPInput();
+                        startOTPTimer();
+                        
+                        // Display new OTP
+                        if (result.otp) {
+                            otpCode.textContent = result.otp;
+                            otpDisplayContainer.style.display = 'block';
+                            autoFillOTP(result.otp);
+                            showMessage(`✅ New OTP: ${result.otp}`, 'success');
+                        } else {
+                            showMessage('New OTP sent but not displayed. Check server console.', 'error');
+                        }
+                        
+                    } else {
+                        hideLoading();
+                        showMessage(result.message || 'Failed to resend OTP', 'error');
+                    }
+                    
+                } catch (error) {
+                    hideLoading();
+                    showMessage('Failed to resend OTP', 'error');
+                }
+            }
+            
+            function copyOTPToClipboard() {
+                if (currentOTPNumber && currentOTPNumber !== 'Not received') {
+                    navigator.clipboard.writeText(currentOTPNumber)
+                        .then(() => {
+                            showMessage('✅ OTP copied to clipboard!', 'success');
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy OTP:', err);
+                        });
+                }
+            }
+            
+            function getOTPFromInputs() {
+                const inputs = document.querySelectorAll('#otpSection .otp-input');
+                return Array.from(inputs).map(input => input.value).join('');
+            }
+            
+            function clearOTPInputs() {
+                document.querySelectorAll('#otpSection .otp-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled');
+                });
+            }
+            
+            function focusFirstOTPInput() {
+                const firstInput = document.querySelector('#otpSection .otp-input');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }
+            
+            function showOTPSection() {
+                emailPasswordForm.style.display = 'none';
+                otpSection.classList.add('show');
+                startOTPTimer();
+                focusFirstOTPInput();
+            }
+            
+            function showLoginForm(e) {
+                if (e) e.preventDefault();
+                otpSection.classList.remove('show');
+                emailPasswordForm.style.display = 'block';
+                otpDisplayContainer.style.display = 'none';
+                if (otpTimer) clearInterval(otpTimer);
+                clearOTPInputs();
+                currentOtpId = null;
+                currentAdminEmail = null;
+                currentOTPNumber = null;
+                showMessage('👋 Please login with your credentials', 'info');
+            }
+            
+            function startOTPTimer() {
+                timeLeft = 600;
+                const timerElement = document.getElementById('timerValue');
+                const timerContainer = document.getElementById('otpTimer');
+                
+                timerContainer.style.display = 'block';
+                timerElement.textContent = '10:00';
+                
+                if (otpTimer) clearInterval(otpTimer);
+                
+                otpTimer = setInterval(() => {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timeLeft < 120) {
+                        timerElement.style.color = '#ff6b6b';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(otpTimer);
+                        timerElement.textContent = '00:00';
+                        showMessage('OTP expired. Please request a new one.', 'error');
+                        clearOTPInputs();
+                        otpDisplayContainer.style.display = 'none';
+                        currentOtpId = null;
+                        currentOTPNumber = null;
+                    }
+                }, 1000);
+            }
+            
+            function showLoading() {
+                loadingIndicator.style.display = 'block';
+                emailPasswordForm.style.display = 'none';
+                otpSection.style.display = 'none';
+            }
+            
+            function hideLoading() {
+                loadingIndicator.style.display = 'none';
+            }
+            
+            function showMessage(message, type = 'info') {
+                loginMessage.textContent = message;
+                loginMessage.className = `login-message ${type}`;
+                loginMessage.style.display = 'block';
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        loginMessage.style.display = 'none';
+                    }, 5000);
+                }
+            }
+            
+            async function apiRequest(endpoint, method = 'GET', data = null) {
+                try {
+                    const options = {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin'
+                    };
+                    
+                    if (data) options.body = JSON.stringify(data);
+                    
+                    const response = await fetch(`/api${endpoint}`, options);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    }
+                    
+                    return await response.json();
+                    
+                } catch (error) {
+                    console.error('API request failed:', error);
+                    throw error;
+                }
+            }
+            
+            function checkExistingSession() {
+                const existingSession = localStorage.getItem('adminSession');
+                if (existingSession) {
+                    try {
+                        const sessionData = JSON.parse(existingSession);
+                        console.log('Existing session found for:', sessionData.email);
+                        // Optional: Auto-redirect if session is valid
+                        // window.location.href = '/admin-panel.html';
+                    } catch (e) {
+                        localStorage.removeItem('adminSession');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
